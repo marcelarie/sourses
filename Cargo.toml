@@ -4,3 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0.98"
+clap = { version = "4", features = ["derive"] }
+
+# optional backends
+portable-pty = { version = "0.9", optional = true }
+pty         = { version = "0.2", optional = true }
+
+[features]
+default = ["portable-pty"]         
+lowlevel = ["pty"]
