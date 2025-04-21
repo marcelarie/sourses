@@ -6,11 +6,14 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.98"
 clap = { version = "4", features = ["derive"] }
+dirs = "4.0"
+rusqlite = { version = "0.29", features = [ "bundled", ], default-features = false }
 
 # optional backends
 portable-pty = { version = "0.9", optional = true }
-pty         = { version = "0.2", optional = true }
+pty = { version = "0.2", optional = true }
+nix = { version = "0.26", features = ["term"] }
 
 [features]
-default = ["portable-pty"]         
+default = ["portable-pty"]
 lowlevel = ["pty"]
