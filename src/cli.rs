@@ -1,3 +1,5 @@
+use core::fmt;
+
 use clap::{Parser, Subcommand, ValueEnum};
 
 /// sourses: a PTY‑backed shell session indexer
@@ -48,4 +50,21 @@ pub enum ItemType {
     Error,
     Clipboard,
     Tmux,
+}
+
+impl fmt::Display for ItemType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            ItemType::Url => "url",
+            ItemType::Path => "path",
+            ItemType::Command => "command",
+            ItemType::Output => "output",
+            ItemType::Env => "env",
+            ItemType::Pid => "pid",
+            ItemType::Error => "error",
+            ItemType::Clipboard => "clipboard",
+            ItemType::Tmux => "tmux",
+        };
+        write!(f, "{}", s)
+    }
 }

@@ -4,7 +4,7 @@ use anyhow::Result;
 
 /// Common interface for our PTY backends.
 pub trait PtyBackend: Send {
-    fn spawn_shell(&mut self) -> Result<()>;
+    fn spawn_shell(&mut self, tx: std::sync::mpsc::Sender<Vec<u8>>) -> anyhow::Result<()>;
     fn read_master(&mut self, buf: &mut [u8]) -> Result<usize>;
     fn write_master(&mut self, buf: &[u8]) -> Result<usize>;
     fn resize(&mut self, rows: u16, cols: u16) -> Result<()>;
@@ -21,22 +21,16 @@ mod pty_impl;
 pub use pty_impl::LowLevelPtyBackend;
 
 pub fn create_backend() -> Box<dyn PtyBackend> {
-    // If the "portable-pty" feature is enabled, return that backend:
     #[cfg(feature = "portable-pty")]
     {
         return Box::new(PortablePtyBackend::new());
     }
 
-    // If the "pty" feature is enabled, return the low‑level backend:
     #[cfg(feature = "pty")]
     {
         return Box::new(LowLevelPtyBackend::new());
     }
 
-    // **Only** if neither feature is active, emit a compile‑time error:
     #[cfg(not(any(feature = "portable-pty", feature = "pty")))]
-    compile_error!(
-        "You must compile with --features portable-pty or --features pty"
-    );
+    compile_error!("You must compile with --features portable-pty or --features pty");
 }
-
